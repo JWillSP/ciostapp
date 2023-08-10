@@ -65,30 +65,30 @@ def get_checkout_data(co_, std_id):
     checkout = list(db[co_].find({"matrícula": std_id}))
     return checkout
 
-def check_valid_projects():
-    st.title("Entrada e Saída no dia de hoje")
-    checkin_df  = pd.DataFrame(get_data_at_db_3(ci, get_date_and_time()[0]))
-    try:
-        checkin_df = checkin_df.set_index('matrícula')
-        checkin_df = checkin_df.rename(columns={'hora': 'entrada'})
-        checkin_df = checkin_df.drop(columns=['_id', 'data', 'create_date'])
-        all_students = pd.DataFrame(get_data_at_db_5(colec1))
-        all_students = all_students.set_index('matrícula')
-        checkin_df['nome'] =  all_students['estudante']
-        checkin_df['turma'] = all_students['turma']
-        checkin_df['turno'] = all_students['turno']
-        checkout_df = pd.DataFrame(get_data_at_db_3(co, get_date_and_time()[0]))
-        if not checkout_df.empty:
-            checkout_df = checkout_df.set_index('matrícula')
-            checkin_df['saída'] = checkout_df['hora']
-        print(checkin_df)
-        checkin_df = checkin_df.set_index('nome')
-        if not checkin_df.empty:
-            st.dataframe(checkin_df, use_container_width=True)
-        else:
-            st.error("Falha em localizar entradas e saídas!")
-    except KeyError:
-        st.error("Falha em localizar entradas e saídas!")
+# def check_valid_projects():
+#     st.title("Entrada e Saída no dia de hoje")
+#     checkin_df  = pd.DataFrame(get_data_at_db_3(ci, get_date_and_time()[0]))
+#     try:
+#         checkin_df = checkin_df.set_index('matrícula')
+#         checkin_df = checkin_df.rename(columns={'hora': 'entrada'})
+#         checkin_df = checkin_df.drop(columns=['_id', 'data', 'create_date'])
+#         all_students = pd.DataFrame(get_data_at_db_5(colec1))
+#         all_students = all_students.set_index('matrícula')
+#         checkin_df['nome'] =  all_students['estudante']
+#         checkin_df['turma'] = all_students['turma']
+#         checkin_df['turno'] = all_students['turno']
+#         checkout_df = pd.DataFrame(get_data_at_db_3(co, get_date_and_time()[0]))
+#         if not checkout_df.empty:
+#             checkout_df = checkout_df.set_index('matrícula')
+#             checkin_df['saída'] = checkout_df['hora']
+#         print(checkin_df)
+#         checkin_df = checkin_df.set_index('nome')
+#         if not checkin_df.empty:
+#             st.dataframe(checkin_df, use_container_width=True)
+#         else:
+#             st.error("Falha em localizar entradas e saídas!")
+#     except KeyError:
+#         st.error("Falha em localizar entradas e saídas!")
 
 
 def check_all():
@@ -160,10 +160,10 @@ def search_student():
 
 
 def main(user, logout):
-    st.title("CHECK-IN/OUT CETI")
+    st.title("RELATÓRIO DE ENTRADA E SAÍDA")
     full_name = user
     st.markdown(
-        f'### {full_name}, bem vindo ao relatório de entrada e saída de alunos no prédio do CETI!'
+        f'### {full_name}, bem vind@!'
     )
     st.button('sair', on_click=logout)
     pages = {
