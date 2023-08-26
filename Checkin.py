@@ -65,50 +65,26 @@ def get_checkout_data(co_, std_id):
     checkout = list(db[co_].find({"matrícula": std_id}))
     return checkout
 
-# def check_valid_projects():
-#     st.title("Entrada e Saída no dia de hoje")
-#     checkin_df  = pd.DataFrame(get_data_at_db_3(ci, get_date_and_time()[0]))
-#     try:
-#         checkin_df = checkin_df.set_index('matrícula')
-#         checkin_df = checkin_df.rename(columns={'hora': 'entrada'})
-#         checkin_df = checkin_df.drop(columns=['_id', 'data', 'create_date'])
-#         all_students = pd.DataFrame(get_data_at_db_5(colec1))
-#         all_students = all_students.set_index('matrícula')
-#         checkin_df['nome'] =  all_students['estudante']
-#         checkin_df['turma'] = all_students['turma']
-#         checkin_df['turno'] = all_students['turno']
-#         checkout_df = pd.DataFrame(get_data_at_db_3(co, get_date_and_time()[0]))
-#         if not checkout_df.empty:
-#             checkout_df = checkout_df.set_index('matrícula')
-#             checkin_df['saída'] = checkout_df['hora']
-#         print(checkin_df)
-#         checkin_df = checkin_df.set_index('nome')
-#         if not checkin_df.empty:
-#             st.dataframe(checkin_df, use_container_width=True)
-#         else:
-#             st.error("Falha em localizar entradas e saídas!")
-#     except KeyError:
-#         st.error("Falha em localizar entradas e saídas!")
 
 
 def check_all():
     st.title("Escolha a data")
     datex = st.date_input("Data", value=date.today())
     datexx = datex.strftime('%d-%m-%Y')
-    checkin_df  = pd.DataFrame(get_data_at_db_3(ci, datexx))
+    checkin_df = pd.DataFrame(get_data_at_db_3(ci, datexx))
     try:
         checkin_df = checkin_df.set_index('matrícula')
         checkin_df = checkin_df.rename(columns={'hora': 'entrada'})
         checkin_df = checkin_df.drop(columns=['_id', 'data', 'create_date'])
         all_students = pd.DataFrame(get_data_at_db_5(colec1))
         all_students = all_students.set_index('matrícula')
-        checkin_df['nome'] =  all_students['estudante']
+        checkin_df['nome'] = all_students['estudante']
         checkin_df['turma'] = all_students['turma']
         checkin_df['turno'] = all_students['turno']
         checkout_df = pd.DataFrame(get_data_at_db_3(co, datexx))
         if not checkout_df.empty:
-            checkout_df = checkout_df.set_index('matrícula')
-            checkin_df['saída'] = checkout_df['hora']
+            checkout_df = checkout_df.set_index('matrícula').rename(columns={'hora': 'saída'})
+            checkin_df = checkin_df.join(checkout_df[['saída']], on='matrícula', how='left')
         print(checkin_df)
         checkin_df = checkin_df.set_index('nome')
         if not checkin_df.empty:
@@ -117,6 +93,7 @@ def check_all():
             st.error("Falha em localizar entradas e saídas!")
     except KeyError:
         st.error("Falha em localizar entradas e saídas!")
+
 
 
 def search_student():

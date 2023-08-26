@@ -86,8 +86,8 @@ def get_student_checkin_data(student_id, project_id):
         checkin_df = checkin_df.drop(columns=['_id', 'create_date', 'project_id'])
         checkout_df = pd.DataFrame(get_data_at_db_3(po, '', project_id))
         if not checkout_df.empty:
-            checkout_df = checkout_df.set_index('matrícula')
-            checkin_df['saída'] = checkout_df['hora']
+            checkout_df = checkout_df.set_index('matrícula').rename(columns={'hora': 'saída'})
+            checkin_df = checkin_df.join(checkout_df[['saída']], on='matrícula', how='left')
         checkin_df = checkin_df.set_index('data')
         return checkin_df
     return pd.DataFrame()
@@ -147,8 +147,8 @@ def search_by_date():
         checkin_df['turno'] = all_students['turno']
         checkout_df = pd.DataFrame(get_data_at_db_3(po, selected_date, id_project))
         if not checkout_df.empty:
-            checkout_df = checkout_df.set_index('matrícula')
-            checkin_df['saída'] = checkout_df['hora']
+            checkout_df = checkout_df.set_index('matrícula').rename(columns={'hora': 'saída'})
+            checkin_df = checkin_df.join(checkout_df[['saída']], on='matrícula', how='left')
         checkin_df = checkin_df.set_index('nome')
         st.write("Registros de Entrada:")
         st.write(checkin_df)
