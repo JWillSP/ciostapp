@@ -237,7 +237,7 @@ def generate(df7x, collection, mysel=[], secret_key=''):
     # for each directory join all pdfs into one
 
     for turma in ['recorte12']:
-        pdfs = [f'./{turma}/{pdf}' for pdf in os.listdir(f'./{turma}')]
+        pdfs = [f'./{turma}/{pdf}' for pdf in os.listdir(f'./{turma}') if pdf.endswith('.pdf')]
         merger = PdfMerger()
         for pdf in pdfs:
             merger.append(pdf)
