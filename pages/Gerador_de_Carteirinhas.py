@@ -132,7 +132,7 @@ def main(user, logout):
                 mysel=[stdz[2] for stdz in st.session_state.tasks],
                 secret_key=secret_key
                 )
-            with open(r"results\recorte12.pdf", "rb") as file:
+            with open("./results/recorte12.pdf", "rb") as file:
                 btn = st.download_button(
                     label="Download do resultado",
                     data=file,
