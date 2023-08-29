@@ -85,7 +85,7 @@ def make_card(student_dict, secret_key):
     school_draw.text(((card_width-school_width)/2, 60), school_name_2, font=header_font1, fill='black', align='center')
 
     header_font2 = ImageFont.truetype('Roboto-Regular.ttf', size=16)
-    school_address = "AVENIDA BELA VISTA - BAIRRO BELA VISTA"
+    school_address = "AVENIDA BELA VISTA N° 1055 - BAIRRO BELA VISTA"
     address_width = header_font2.getlength(school_address)
     address_draw = ImageDraw.Draw(card)
     address_draw.text(((card_width-address_width)/2, 90), school_address, font=header_font2, fill='black', align='center')
@@ -221,7 +221,11 @@ def generate(df7x, collection, mysel=[], secret_key=''):
         sliced = me.iloc[i:i+10]
         dict_of_8 = sliced.T.to_dict().values()
         for data in dict_of_8:
-            doc = next(collection.find({"_id" : data['matrícula']}))
+            try:
+                doc = next(collection.find({"_id" : data['matrícula']}))
+            except StopIteration:
+                print(f'Aluno {data["matrícula"]} não encontrado no banco de dados')
+                continue
             pic = doc['pic']
             new_bytes = base64.b64decode(bytes(pic,'utf-8'))
             img = io.BytesIO(new_bytes)

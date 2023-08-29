@@ -34,7 +34,7 @@ db = cluster[db1]
 if 'tasks' not in st.session_state:
     st.session_state.tasks = []
     
-@st.cache_data(ttl=86_400)
+@st.cache_data(ttl=3600)
 def get_data_at_db():
     collection1 = db[colec1] 
     all_stds = pd.DataFrame(list(collection1.find()))
@@ -45,6 +45,7 @@ picscolection = db[pics]
 
 df7x = get_data_at_db()
 
+@st.cache_data(ttl=3600)
 def get_local():
     collection = db[creds] 
     all_creds = pd.DataFrame(list(collection.find()))
@@ -80,22 +81,27 @@ def main(user, logout):
             st.write('')
             return None
         elif len(filtered_students) == 1:
-            std = filtered_students.iloc[0]
+            marcado = st.radio('Estudante encontrado:', filtered_students['buscador'].values.tolist())
+            selected_student = all_students[all_students['buscador'] == marcado]
+            std = selected_student.iloc[0]
             student_id = std.matrícula
             student_name_db = std.estudante
             return std.buscador, student_name_db, student_id
-        elif len(filtered_students) > 10:
+        elif len(filtered_students) > 15:
             st.write("Muitos resultados, refine sua busca!")
             return None
         else:
             st.write("Estudantes encontrados:")
             marcado = st.radio('marque o aluno correto: ', ['Marque um abaixo!'] + filtered_students['buscador'].values.tolist())
-            filtered_students = all_students[all_students['buscador'].str.contains(marcado, case=False)]
-            if len(filtered_students) == 1:
-                std = filtered_students.iloc[0]
-                student_id = std.matrícula
-                student_name_db = std.estudante
-                return std.buscador, student_name_db, student_id
+
+            selected_student = all_students[all_students['buscador'] == marcado]
+            try: 
+                std = selected_student.iloc[0]
+            except IndexError:
+                return None
+            student_id = std.matrícula
+            student_name_db = std.estudante
+            return std.buscador, student_name_db, student_id
             
     metodo = st.radio('Selecione o método de busca: ', ['Turma', 'Alunos Avulsos'])
     if metodo == 'Turma':
@@ -109,21 +115,24 @@ def main(user, logout):
                 with col_a:
                     if st.button('Adicionar Estudante'):
                         st.session_state.tasks.append(result)
+                        st.experimental_rerun()
             if result in st.session_state.tasks:
                 with col_b:
                     if st.button('Remover Estudante'):
                         st.session_state.tasks.remove(result)
-            if st.session_state.tasks:
+                        st.experimental_rerun()
+            if st.session_state.tasks != []:
                 with col_c:
                     if st.button('Remover Todos'):
                         st.session_state.tasks = []
+                        st.experimental_rerun()
 
             # Mostre as tarefas existentes em uma lista
-            st.write('## Lista de Estudantes:')
-            for task in st.session_state.tasks:
-                st.write(task[0])
-        
     if st.session_state.tasks:
+        st.write('#### Lista de Estudantes para Gerar Carteirinhas:')
+        for task in st.session_state.tasks:
+            st.write(task[0])
+    
         if st.button('Gerar Carteirinhas'):
             from generatemodule import generate
             generate(
@@ -139,6 +148,8 @@ def main(user, logout):
                     file_name="carteirinhas.pdf",
                     mime="application/pdf"
                 )   
+    else:
+        st.write('Adicione estudantes para gerar carteirinhas')
 
 from myecm import logador
 logador(external_fucntion=main, permitions=['isAdmin'])

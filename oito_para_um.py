@@ -1,4 +1,4 @@
-from PIL import Image
+from PIL import Image, ImageDraw
 import time
 # a function for getting a time as integer
 def get_time():
@@ -23,6 +23,7 @@ def make_one_page(
 
     # Create a new blank image with the dimensions of an A4 paper
     a4_image = Image.new('RGB', (A4_WIDTH, A4_HEIGHT), 'white')
+    draw = ImageDraw.Draw(a4_image)
 
     # Open each picture and paste it onto the A4 image
     for i, aluno in enumerate(alunos):
@@ -30,7 +31,27 @@ def make_one_page(
         resized_image = img.resize((PIC_WIDTH_PX, PIC_HEIGHT_PX), resample=Image.LANCZOS)
         x_offset = int(i % 2 * PIC_WIDTH_PX)
         y_offset = int(i // 2 * PIC_HEIGHT_PX)
-        a4_image.paste(resized_image, (270 + ((i % 2)+1)*12 + x_offset, 100 + ((i // 2)+1)*12 +  y_offset))
+        init_x = 230
+        init_y = 50
+        x_point = init_x + ((i % 2)+1)*26 + x_offset
+        y_point = init_y + ((i // 2)+1)*26 + y_offset
+
+        if i // 2 == 0: 
+            draw.line([(x_point, init_y + 13),
+                   (x_point + PIC_WIDTH_PX, init_y + 13)], fill="black", width=1)
+        if i % 2 == 0:
+            draw.line([(init_x + 13, y_point),
+                   (init_x + 13, y_point + PIC_HEIGHT_PX)], fill="black", width=1)
+            
+        # Add vertical line
+        draw.line([(x_point + PIC_WIDTH_PX + 13 , y_point),
+                   (x_point + PIC_WIDTH_PX + 13, y_point + PIC_HEIGHT_PX)], fill="black", width=1)
+        
+        # Add horizontal line
+        draw.line([(x_point, y_point + PIC_HEIGHT_PX + 13),
+                   (x_point + PIC_WIDTH_PX, y_point + PIC_HEIGHT_PX + 13)], fill="black", width=1)
+            
+        a4_image.paste(resized_image, (x_point, y_point))
 
     # Save the A4 image as a PDF file
     a4_image.save(f'./{turma}/pagina_as_{get_time()}_{pagina}.pdf', 'PDF', resolution=300.0)
