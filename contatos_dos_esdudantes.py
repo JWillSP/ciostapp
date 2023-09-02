@@ -62,7 +62,7 @@ def get_image(upload_first=False):
         PIL_img = correct_image_orientation(PIL_img)
         img = np.array(PIL_img)
         gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        haar_cascade = cv2.CascadeClassifier('Haarcascade_frontalface_default.xml')
+        haar_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
         faces_rect = haar_cascade.detectMultiScale(gray_img, 1.1, 9)
         for (x, y, w, h) in faces_rect:
             factor = 1.7
