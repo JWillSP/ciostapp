@@ -30,7 +30,7 @@ def get_all_have_pic():
     collection = db[pics]
     all_have_pic = collection.distinct('_id')
     return all_have_pic
-st.write(len(get_all_have_pic()))
+
 
 def fetch_image(matrícula: str) -> Image.Image:
     col_pix = db[pics]
@@ -78,24 +78,8 @@ def get_data_at_db():
 
 picscolection = db[pics] 
 
-# df7x = get_data_at_db()
-
-# @st.cache_data(ttl=3600)
-# def get_local():
-#     collection = db[creds] 
-#     all_creds = pd.DataFrame(list(collection.find()))
-#     return all_creds
-
-# local = get_local()
-
-# df7x['local'] = df7x['matrícula'].apply(lambda x: local.set_index('matrícula')['transporte'].to_dict().get(x, 'SEDE DO MUNICÍPIO'))
-
-# def gen_button_list(lista=[]):
-
-
 
 def main(user, logout):
-    st.title("TIRAR FOTOS DOS ESTUDANTES")
     all_stds = get_data_at_db()
     mapping_stds = {
         matrícula: ' - '.join(
@@ -112,7 +96,6 @@ def main(user, logout):
     # selecionar se vai exibir os estudantes sem fotos ou com fotos
     sem_pic = all_stds[~all_stds['matrícula'].isin(get_all_have_pic())]
     com_pic = all_stds[all_stds['matrícula'].isin(get_all_have_pic())]
-    exibir = st.radio('EXIBIR:', ['Estudantes SEM fotos', 'Estudantes COM fotos'])
     col_a, col_b, col_c = st.columns(3)
     with col_a:
         st.metric(label='Estudantes SEM fotos', value=len(sem_pic))
@@ -120,7 +103,9 @@ def main(user, logout):
         st.metric(label='Estudantes COM fotos', value=len(com_pic))
     with col_c:
         st.metric(label='Total de Estudantes', value=len(all_stds))
+    st.title("TIRAR FOTOS DOS ESTUDANTES")
 
+    exibir = st.radio('EXIBIR:', ['Estudantes SEM fotos', 'Estudantes COM fotos'])
     if exibir == 'Estudantes SEM fotos':
         all_students = sem_pic
     else:
@@ -130,7 +115,7 @@ def main(user, logout):
         todas_turmas = all_students['turma'].unique().tolist()
         todas_turmas.sort()
         todas_turmas.insert(0, 'TURMAS')
-        turma = st.selectbox('Selecione a turma:', todas_turmas)
+        turma = st.selectbox('Selecione a turma:'.upper(), todas_turmas)
         if turma == 'TURMAS':
             return None
         estudantes_da_turma = all_students[all_students['turma'] == turma]
@@ -141,11 +126,8 @@ def main(user, logout):
         student_name_db = std.estudante
         return std.buscador, student_name_db, student_id
 
-    
-
     def search_student():
-        st.markdown("## BUSCAR ESTUDANTE")
-        student_name = st.text_input("Digite o nome do estudante, matrícula ou turma:", value='digite aqui')
+        student_name = st.text_input("Digite o nome do estudante, matrícula ou turma:".upper(), value='digite aqui')
         filtered_students = all_students[all_students['buscador'].str.contains(student_name, case=False)]
         if len(filtered_students) == 0:
             st.write('')
@@ -172,8 +154,9 @@ def main(user, logout):
             student_id = std.matrícula
             student_name_db = std.estudante
             return std.buscador, student_name_db, student_id
-            
+    st.divider()
     metodo = st.radio('Selecione o método de busca: ', ['Turma', 'Alunos Avulsos'])
+    st.divider()
     if metodo == 'Turma':
         result = select_turmas()
 
@@ -183,7 +166,8 @@ def main(user, logout):
     if result:
         received = fetch_image(result[2])
         if received is None:
-            st.write('Não há foto cadastrada para este estudante!')
+            st.divider()
+            st.write('CADASTRAR FOTO DO ESTUDANTE!')
             try: 
                 pic, thumb = get_image()
             except TypeError:
@@ -204,8 +188,8 @@ def main(user, logout):
             # image = Image.open(io.BytesIO(image_data))
             # print(image.size)
             # st.image(image, caption=f'{result[1]} - {result[2]}', width=250)
-            st.write('')
-            st.write('Atualizar foto')
+            st.divider()
+            st.write('ATUALIZAR FOTO:')
             try:
                 pic, thumb = get_image(upload_first=True)
             except TypeError:
