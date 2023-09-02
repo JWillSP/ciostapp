@@ -103,3 +103,4 @@ def get_image(upload_first=False):
         b64_pic = b64pic(Image.fromarray(main_resized_img))
         b64_thumb = b64pic(Image.fromarray(resized_img))
         return b64_pic, b64_thumb
+    
