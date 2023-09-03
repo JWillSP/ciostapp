@@ -204,4 +204,5 @@ def main(user, logout):
                 upload_pic_and_thumb(result[2], pic, thumb)
                 st.success('Foto enviada com sucesso!')
 
-main(user='user', logout='logout')
+from myecm import logador
+logador(external_fucntion=main, permitions=['isAdmin', 'isEnvAgent'])
