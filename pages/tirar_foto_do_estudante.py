@@ -169,7 +169,7 @@ def main(user, logout):
             st.divider()
             st.write('CADASTRAR FOTO DO ESTUDANTE!')
             try: 
-                pic, thumb = get_image()
+                pic, thumb = get_image(upload_first=True)
             except TypeError:
                 return None
             st.write('principal')
