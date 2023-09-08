@@ -62,3 +62,4 @@ zipp==3.15.0
 qrcode==7.4.2
 PyPDF2==3.0.1
 opencv-python-headless==4.8.0.76
+openpyxl==3.1.2
