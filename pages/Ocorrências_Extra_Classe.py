@@ -64,14 +64,14 @@ def show_student_occurrences():
     mapping_stds = {
         matrícula: ' - '.join((nome, matrícula, turma))  for nome, matrícula, turma in zip(new_all_students['estudante'], new_all_students['matrícula'], new_all_students['turma'])
     }
-    new_all_students['buscardor'] = new_all_students['matrícula'].map(mapping_stds)
+    new_all_students['buscador'] = new_all_students['matrícula'].map(mapping_stds)
 
     student_name = st.text_input("Digite o nome do estudante, matrícula ou turma:")
-    filtered_students = new_all_students[new_all_students['buscardor'].str.contains(student_name, case=False)]
+    filtered_students = new_all_students[new_all_students['buscador'].str.contains(student_name, case=False)]
     if len(filtered_students) == 0:
         st.write("Nenhum estudante encontrado com a matrícula fornecida.")
     elif len(filtered_students) > 1:
-        new_all_students = new_all_students.set_index('buscardor')
+        new_all_students = new_all_students.set_index('buscador')
         st.dataframe(new_all_students["_id"], use_container_width=True)
     else:
         selected_student = filtered_students.iloc[0]

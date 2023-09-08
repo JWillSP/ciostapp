@@ -102,10 +102,10 @@ def search_student():
     mapping_stds = {
         matrícula: ' - '.join((nome, matrícula, turma))  for nome, matrícula, turma in zip(all_students['estudante'], all_students['matrícula'], all_students['turma'])
     }
-    all_students['buscardor'] = all_students['matrícula'].map(mapping_stds)
+    all_students['buscador'] = all_students['matrícula'].map(mapping_stds)
 
     student_name = st.text_input("Digite o nome do estudante, matrícula ou turma:")
-    filtered_students = all_students[all_students['buscardor'].str.contains(student_name, case=False)]
+    filtered_students = all_students[all_students['buscador'].str.contains(student_name, case=False)]
     if len(filtered_students) == 1:
         std = filtered_students.iloc[0]
         st.write(f"Estudante encontrado: {std.estudante}")
@@ -131,7 +131,7 @@ def search_student():
     elif len(filtered_students) > 1:
         st.warning("Mais de um estudante encontrado. Por favor, especifique a busca.")
         filtered_students = filtered_students.set_index("_id")
-        st.dataframe(filtered_students['buscardor'], use_container_width=True)
+        st.dataframe(filtered_students['buscador'], use_container_width=True)
     else:
         st.warning("Nenhum estudante encontrado com o nome fornecido.")
 
