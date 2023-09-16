@@ -141,6 +141,7 @@ def logador(external_fucntion=lambda x: None, permitions=['normal']):
         st.markdown(f"###### ADMINISTRATIVO :old_key:") if 'isAdmin' in permitions else None
         st.markdown(f"###### PROFESSORES/MONITORES :old_key:") if 'isTeacher' in permitions else None
         st.markdown(f"###### AGENTES DE PORTARIA E PÁTIO :old_key:") if 'isEnvAgent' in permitions else None
+        st.markdown(f"###### SUPER USUÁRIO :old_key:") if 'isSuperUser' in permitions else None
         st.write("## Fomulário de login")
         series_data = None
         if series_data is None:

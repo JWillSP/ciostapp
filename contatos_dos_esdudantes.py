@@ -81,12 +81,12 @@ def get_image(upload_first=False):
                 2
             )
             # cv2.rectangle(img, (x, y), (x+w, y+h), (0, 255, 0), 2)
-            facezoom = 0.65
+            facezoom = 0.175
             new_dif_h = int(dif_h*facezoom)
             sq_x1 = x - new_dif_h
-            sq_y1 = y - new_dif_h - desloc_y
+            sq_y1 = y - new_dif_h + int(0.6*desloc_y)
             sq_x2 = x + h + new_dif_h
-            sq_y2 = y + h + new_dif_h - desloc_y
+            sq_y2 = y + h + new_dif_h + int(0.6*desloc_y)
             cv2.rectangle(
                 img,
                 (sq_x1, sq_y1),
