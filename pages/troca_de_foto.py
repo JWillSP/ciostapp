@@ -222,4 +222,4 @@ def main(user, logout):
                 st.success('Foto em aprovação apagada com sucesso!')
 
 from myecm import logador
-logador(external_fucntion=main, permitions=['isAdmin', 'isEnvAgent'])
+logador(external_fucntion=main, permitions=['isSuperUser'])
