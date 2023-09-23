@@ -135,8 +135,10 @@ def master(user, logout):
                 ph.empty()
                 return
             foodsdf = foodsdf.drop(columns=['_id', 'data', 'create_date'])
-            foodsdf['nome'] = foodsdf['matrícula'].map(df.set_index('matrícula')['estudante'])
-            foodsdf['turma'] = foodsdf['matrícula'].map(df.set_index('matrícula')['turma'])
+            merged_df = pd.merge(foodsdf.reset_index(), df[['matrícula', 'estudante','turma', 'turno' ]], on='matrícula', how='left')
+            foodsdf['nome'] = merged_df['estudante']
+            foodsdf['turma'] = merged_df['turma']
+            foodsdf['turno'] = merged_df['turno']
             foodsdf.sort_values(by=['hora'], ascending=False, inplace=True)
             foodsdf = foodsdf.set_index('nome')
             form.table(foodsdf)
