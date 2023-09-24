@@ -4,6 +4,9 @@ import pandas as pd
 from datetime import date
 from datetime import datetime
 import pytz
+st.set_page_config(
+page_title="Checkin e Checkout - Relatório de Entrada e Saída"
+)
 
 def get_date_and_time():
     tz = pytz.timezone('America/Sao_Paulo')
