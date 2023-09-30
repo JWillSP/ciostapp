@@ -110,9 +110,7 @@ def main(user, logout):
     # selecionar se vai exibir os estudantes sem fotos ou com fotos
     # sem_pic = all_stds[~all_stds['matrícula'].isin(get_all_have_pic())]
     com_pic = all_stds[all_stds['matrícula'].isin(get_all_have_pic())]
-    st.write(com_pic.shape)
     com_pic_and_repic = com_pic[com_pic['matrícula'].isin(get_all_have_pic_to_aprove())]
-    st.write(com_pic_and_repic.shape)
     # col_a, col_b, col_c = st.columns(3)
     # with col_a:
     #     st.metric(label='Estudantes SEM fotos', value=len(sem_pic))
