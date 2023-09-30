@@ -5,6 +5,25 @@ from datetime import date
 from datetime import datetime
 import pytz
 
+obj = {
+    "matouAula": "Matou aula",
+    "postoForaAula": "Foi posto para fora da aula",
+    "chegouAtrasado": "Chegou atrasado",
+    "atrapalhouOutraSala": "Atrapalhando o andamento de outra sala",
+    "outraSala": "Foi achado em outra sala",
+    "outroAmbiente": "Foi achado em outro ambiente (quadra, campo etc...)",
+    "teveMauEstar": "Teve mau estar",
+    "liberado": "Liberado para casa sob consentimento da família",
+    "semCarteirinha": "Não trouxe ou recusou mostrar a carteirinha",
+    "outrasOcorrencias": "Ocorrências adicionais",  # Note que isso é apenas um placeholder, pois o valor real deve vir da textarea
+    "by": "Registrado por"
+}
+
+
+def convert_date(date):
+    ndate = date.str.split('.').str[0]
+    return pd.to_datetime(ndate, format='%Y-%m-%dT%H:%M:%S')
+
 current_year = date.today().year
 month_week_mapping = generate_week_dictionary(current_year)
 
@@ -93,6 +112,7 @@ def show_student_occurrences():
             "turma",
             "turno"
         ])
+        student_occurrences = student_occurrences.rename(columns=obj)
         student_occurrences = student_occurrences.set_index('data')
         # replace True for 'Sim' and False for 'Não'
         student_occurrences = student_occurrences.replace({True: "sim", False: "-", "True": "sim", "False": "-"})
@@ -105,7 +125,7 @@ def show_occurrences_by_date():
     selected_date = date_input.strftime("%Y-%m-%d")
 
     occurrences = pd.DataFrame(get_data_all_occurrences(oc))
-    occurrences['selectedDate'] = pd.to_datetime(occurrences['selectedDate'])
+    occurrences['selectedDate'] = convert_date(occurrences['selectedDate'])
     filtered_occurrences = occurrences[occurrences['selectedDate'].dt.date == pd.to_datetime(selected_date).date()]
     
     if len(filtered_occurrences) == 0:
@@ -117,6 +137,7 @@ def show_occurrences_by_date():
         filtered_occurrences = filtered_occurrences.drop(columns=['_id', 'serie', 'selectedDate', "estudante" , "hora"])
         filtered_occurrences = filtered_occurrences.set_index("quem e quando")
         filtered_occurrences = filtered_occurrences.replace({ "True": True, "False": False})
+        filtered_occurrences = filtered_occurrences.rename(columns=obj)
         st.dataframe(filtered_occurrences, use_container_width=True)
 
 
@@ -128,7 +149,7 @@ def show_occurrences_by_week():
     week_number = month_week_mapping[selected_option]
     
     occurrences = pd.DataFrame(get_data_all_occurrences(oc))
-    occurrences['selectedDate'] = pd.to_datetime(occurrences['selectedDate'])
+    occurrences['selectedDate'] = convert_date(occurrences['selectedDate'])
     filtered_occurrences = occurrences[
         (occurrences['selectedDate'].dt.isocalendar().week == week_number)
     ]
@@ -142,6 +163,7 @@ def show_occurrences_by_week():
         filtered_occurrences = filtered_occurrences.drop(columns=['_id', 'serie', 'selectedDate', "estudante" , "data"])
         filtered_occurrences = filtered_occurrences.set_index("quem e quando")
         filtered_occurrences = filtered_occurrences.replace({ "True": True, "False": False})
+        filtered_occurrences = filtered_occurrences.rename(columns=obj)
         st.dataframe(filtered_occurrences, use_container_width=True)
 
 
@@ -171,7 +193,7 @@ def show_occurrences_by_month():
         return
     
     occurrences = pd.DataFrame(get_data_all_occurrences(oc))
-    occurrences['selectedDate'] = pd.to_datetime(occurrences['selectedDate'])
+    occurrences['selectedDate'] = convert_date(occurrences['selectedDate'])
     filtered_occurrences = occurrences[occurrences['selectedDate'].dt.month == month_number]
     
     if len(filtered_occurrences) == 0:
@@ -183,6 +205,7 @@ def show_occurrences_by_month():
         filtered_occurrences = filtered_occurrences.drop(columns=['_id', 'serie', 'selectedDate', "estudante" , "data"])
         filtered_occurrences = filtered_occurrences.set_index("quem e quando")
         filtered_occurrences = filtered_occurrences.replace({ "True": True, "False": False})
+        filtered_occurrences = filtered_occurrences.rename(columns=obj)
         st.dataframe(filtered_occurrences, use_container_width=True)
 
 
